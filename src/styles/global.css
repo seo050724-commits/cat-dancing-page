@@ -1,0 +1,330 @@
+:root {
+  --bg-top: #fff4e6;
+  --bg-bottom: #ffd8e4;
+  --text: #3b2a3f;
+  --muted: #7a6680;
+  --accent: #ff6f91;
+  --accent-strong: #e0446c;
+  --panel: rgba(255, 255, 255, 0.75);
+  --panel-border: rgba(59, 42, 63, 0.12);
+  --focus: #5b5bd6;
+  --floor: rgba(59, 42, 63, 0.15);
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', system-ui, sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-top: #1e1830;
+    --bg-bottom: #3a1f3a;
+    --text: #f6eaf3;
+    --muted: #c3aec0;
+    --panel: rgba(30, 24, 48, 0.75);
+    --panel-border: rgba(246, 234, 243, 0.15);
+    --focus: #a5a5ff;
+    --floor: rgba(0, 0, 0, 0.35);
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  background-attachment: fixed;
+  line-height: 1.5;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- 레이아웃 ---------- */
+
+.layout {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 32px;
+  gap: 8px;
+}
+
+.header {
+  text-align: center;
+}
+.header h1 {
+  font-size: clamp(1.6rem, 6vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.header p {
+  color: var(--muted);
+  font-size: clamp(0.95rem, 3vw, 1.1rem);
+}
+
+.main {
+  width: 100%;
+  max-width: 1080px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* ---------- 무대 ---------- */
+
+.stage {
+  position: relative;
+  width: min(78vw, 320px);
+  padding-top: 90px; /* 점프 공간 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cat-button {
+  width: 100%;
+  border-radius: 50%;
+  touch-action: manipulation;
+  position: relative;
+  z-index: 1;
+}
+.cat img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.shadow {
+  width: 60%;
+  height: 18px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: var(--floor);
+  filter: blur(2px);
+}
+
+.notes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.note {
+  position: absolute;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  color: var(--accent);
+}
+.note-1 { left: 4%; top: 40%; }
+.note-2 { right: 6%; top: 34%; }
+.note-3 { left: 14%; top: 22%; }
+.note-4 { right: 16%; top: 48%; }
+
+/* ---------- 컨트롤 ---------- */
+
+.controls {
+  width: 100%;
+  max-width: 560px;
+  padding: 20px;
+  border-radius: 20px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.play-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(224, 68, 108, 0.35);
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+.play-button:hover {
+  background: var(--accent-strong);
+}
+.play-button:active {
+  transform: scale(0.97);
+}
+.play-button.is-on {
+  background: var(--text);
+  color: var(--bg-top);
+  box-shadow: none;
+}
+
+.control-group {
+  border: none;
+}
+.control-group legend {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px; /* 터치 타겟 최소 크기 */
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--panel-border);
+  background: transparent;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+.chip:hover {
+  border-color: var(--accent);
+}
+.chip:active {
+  transform: scale(0.96);
+}
+.chip[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75em;
+  padding: 1px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--panel-border);
+  background: rgba(127, 127, 127, 0.12);
+}
+.chip[aria-pressed='true'] kbd {
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- 반응형 ---------- */
+
+/* 모바일: 칩을 꽉 채우고 단축키 표시 숨김 (터치 위주) */
+@media (max-width: 599px) {
+  .chips {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .control-group:last-of-type .chips {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .chip {
+    justify-content: center;
+    padding: 0 8px;
+  }
+  .chip kbd,
+  .hint {
+    display: none;
+  }
+}
+
+/* 터치 기기에서는 단축키 안내 숨김 */
+@media (hover: none) {
+  .chip kbd,
+  .hint {
+    display: none;
+  }
+}
+
+/* 태블릿 */
+@media (min-width: 600px) and (max-width: 959px) {
+  .stage {
+    width: 340px;
+  }
+}
+
+/* 데스크톱: 고양이와 컨트롤을 나란히 배치 */
+@media (min-width: 960px) {
+  .layout {
+    padding: 48px 32px;
+  }
+  .main {
+    flex-direction: row;
+    gap: 64px;
+  }
+  .stage {
+    width: 380px;
+  }
+  .controls {
+    width: 440px;
+    padding: 28px;
+  }
+}
+
+/* 낮은 가로 화면(가로 모드 휴대폰) */
+@media (max-height: 520px) and (orientation: landscape) {
+  .layout {
+    padding-top: 12px;
+  }
+  .main {
+    flex-direction: row;
+    gap: 24px;
+  }
+  .stage {
+    width: 200px;
+    padding-top: 60px;
+  }
+}

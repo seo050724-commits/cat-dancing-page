@@ -1,0 +1,141 @@
+/* ---------- 춤 동작 keyframes (transform/opacity만 사용 → GPU 가속) ---------- */
+
+@keyframes wiggle {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-18px) rotate(-12deg); }
+  75% { transform: translateX(18px) rotate(12deg); }
+}
+
+@keyframes jump {
+  0%, 100% { transform: translateY(0) scale(1.08, 0.9); }
+  15% { transform: translateY(0) scale(0.94, 1.08); }
+  50% { transform: translateY(-70px) scale(1, 1); }
+  85% { transform: translateY(0) scale(1.1, 0.88); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(0.85); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes groove {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.15, 0.9) rotate(-6deg); }
+  50% { transform: scale(0.92, 1.12) rotate(0deg); }
+  75% { transform: scale(1.15, 0.9) rotate(6deg); }
+}
+
+@keyframes party {
+  0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  15% { transform: translate(-20px, 0) rotate(-15deg) scale(1.05); }
+  30% { transform: translate(20px, 0) rotate(15deg) scale(1.05); }
+  45% { transform: translate(0, -60px) rotate(0deg) scale(0.95, 1.1); }
+  60% { transform: translate(0, 0) rotate(0deg) scale(1.15, 0.85); }
+  80% { transform: translate(0, -20px) rotate(360deg) scale(1); }
+}
+
+@keyframes shadow-jump {
+  0%, 15%, 85%, 100% { transform: scaleX(1); opacity: 1; }
+  50% { transform: scaleX(0.55); opacity: 0.45; }
+}
+
+@keyframes shadow-party {
+  0%, 30%, 60%, 100% { transform: scaleX(1); opacity: 1; }
+  45% { transform: scaleX(0.6); opacity: 0.5; }
+  80% { transform: scaleX(0.85); opacity: 0.8; }
+}
+
+@keyframes float-note {
+  0% { transform: translate(0, 20px) rotate(-10deg); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translate(var(--drift, 20px), -120px) rotate(15deg); opacity: 0; }
+}
+
+/* ---------- 적용 ---------- */
+
+.cat {
+  display: block;
+  transform-origin: 50% 90%;
+  will-change: transform;
+  transition: transform 0.4s ease;
+  animation-duration: calc(0.8s * var(--speed, 1));
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.dance-wiggle { animation-name: wiggle; }
+.dance-jump { animation-name: jump; animation-duration: calc(0.9s * var(--speed, 1)); }
+.dance-spin {
+  animation-name: spin;
+  animation-timing-function: linear;
+  animation-duration: calc(1.4s * var(--speed, 1));
+  transform-origin: 50% 55%;
+}
+.dance-groove { animation-name: groove; }
+.dance-party { animation-name: party; animation-duration: calc(2.4s * var(--speed, 1)); }
+
+.shadow {
+  will-change: transform, opacity;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+.stage[data-dance='jump'] .shadow {
+  animation-name: shadow-jump;
+  animation-duration: calc(0.9s * var(--speed, 1));
+}
+.stage[data-dance='party'] .shadow {
+  animation-name: shadow-party;
+  animation-duration: calc(2.4s * var(--speed, 1));
+}
+
+.note {
+  animation: float-note calc(2.2s * var(--speed, 1)) ease-out infinite;
+  opacity: 0;
+}
+.note-1 { --drift: -30px; animation-delay: 0s; }
+.note-2 { --drift: 25px; animation-delay: calc(0.55s * var(--speed, 1)); }
+.note-3 { --drift: -15px; animation-delay: calc(1.1s * var(--speed, 1)); }
+.note-4 { --drift: 35px; animation-delay: calc(1.65s * var(--speed, 1)); }
+
+/* 정지: 현재 자세 그대로 멈춤 */
+.is-paused .cat,
+.is-paused .shadow,
+.is-paused .note {
+  animation-play-state: paused;
+}
+.is-paused .note {
+  visibility: hidden;
+}
+
+/* 고양이 hover/누름 반응 */
+.cat-button:hover .cat img,
+.cat-button:focus-visible .cat img {
+  transform: scale(1.04);
+}
+.cat-button:active .cat img {
+  transform: scale(0.96);
+}
+.cat img {
+  transition: transform 0.2s ease;
+}
+
+/* 모션 감소 설정: 동작을 작고 느리게 */
+@media (prefers-reduced-motion: reduce) {
+  .cat,
+  .shadow {
+    animation-duration: calc(3s * var(--speed, 1)) !important;
+  }
+  .dance-jump,
+  .dance-party,
+  .dance-spin,
+  .dance-groove {
+    animation-name: wiggle;
+  }
+  .stage .shadow {
+    animation-name: none;
+  }
+  .note {
+    display: none;
+  }
+}
